@@ -1,0 +1,107 @@
+/* General Page Styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Headings */
+h2, h3 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+/* Logout Button */
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s ease-in-out;
+    margin: 10px 0;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Table Styling */
+table {
+    width: 90%;
+    max-width: 800px;
+    margin-top: 20px;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background: #007bff;
+    color: white;
+}
+
+td {
+    color: #333;
+}
+
+/* Action Buttons */
+td button {
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+td button:first-child {
+    background-color: #28a745; /* Green for Accept */
+    color: white;
+}
+
+td button:first-child:hover {
+    background-color: #218838;
+}
+
+td button:last-child {
+    background-color: #dc3545; /* Red for Decline */
+    color: white;
+}
+
+td button:last-child:hover {
+    background-color: #c82333;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    table {
+        width: 100%;
+    }
+
+    td button {
+        width: 80px;
+        padding: 6px;
+    }
+}

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="user.css">
+</head>
+<body>
+    <h2>Welcome, <span id="username"></span></h2>
+    <button onclick="logout()">Logout</button>
+
+    <h3>Submit Project</h3>
+    <input type="text" id="projectTitle" placeholder="Project Title">
+    <input type="text" id="projectDescription" placeholder="Project Description">
+    <select id="assignedManager"></select>
+    <button onclick="submitProject()">Submit</button>
+
+    <h3>Your Projects</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Manager</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="projectsTable"></tbody>
+    </table>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const username = localStorage.getItem("username");
+            document.getElementById("username").textContent = username;
+
+            // Fetch and display projects
+            await fetchProjects();
+
+            // Fetch available managers
+            const response = await fetch("http://localhost:5000/managers");
+            const managers = await response.json();
+            const managerDropdown = document.getElementById("assignedManager");
+            managers.forEach(manager => {
+                const option = document.createElement("option");
+                option.value = manager.username;
+                option.textContent = manager.username;
+                managerDropdown.appendChild(option);
+            });
+        });
+
+        async function fetchProjects() {
+            const username = localStorage.getItem("username");
+            const response = await fetch(`http://localhost:5000/user-projects/${username}`);
+            const projects = await response.json();
+            const tableBody = document.getElementById("projectsTable");
+            tableBody.innerHTML = "";
+
+            projects.forEach(project => {
+                const row = `<tr>
+                    <td>${project.title}</td>
+                    <td>${project.description}</td>
+                    <td>${project.assignedTo}</td>
+                    <td>${project.status}</td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        async function submitProject() {
+            const title = document.getElementById("projectTitle").value;
+            const description = document.getElementById("projectDescription").value;
+            const assignedTo = document.getElementById("assignedManager").value;
+            const submittedBy = localStorage.getItem("username");
+
+            await fetch("http://localhost:5000/submit-project", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title, description, assignedTo, submittedBy })
+            });
+
+            alert("Project submitted!");
+            fetchProjects();
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>

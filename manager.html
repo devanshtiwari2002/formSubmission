@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard</title>
+    <link rel="stylesheet" href="manager.css">
+</head>
+<body>
+    <h2>Welcome, Manager <span id="managerName"></span></h2>
+    <button onclick="logout()">Logout</button>
+
+    <h3>Assigned Projects</h3>
+    <table >
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Submitted By</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="projectsTable"></tbody>
+    </table>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const managerName = localStorage.getItem("username");
+            document.getElementById("managerName").textContent = managerName;
+            await fetchProjects();
+        });
+
+        async function fetchProjects() {
+            const managerName = localStorage.getItem("username");
+            const response = await fetch(`http://localhost:5000/manager-projects/${managerName}`);
+            const projects = await response.json();
+            const tableBody = document.getElementById("projectsTable");
+            tableBody.innerHTML = "";
+
+            projects.forEach(project => {
+                const row = `<tr>
+                    <td>${project.title}</td>
+                    <td>${project.description}</td>
+                    <td>${project.submittedBy}</td>
+                    <td>${project.status}</td>
+                    <td>
+                        <button onclick="updateProject('${project._id}', 'Accepted')">Accept</button>
+                        <button onclick="updateProject('${project._id}', 'Declined')">Decline</button>
+                    </td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        async function updateProject(projectId, status) {
+            await fetch("http://localhost:5000/update-project", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ projectId, status })
+            });
+
+            alert(`Project ${status.toLowerCase()}!`);
+            fetchProjects();
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>
